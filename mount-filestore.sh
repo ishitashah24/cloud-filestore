@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#create filestore instance
+./create-filestore.sh
+
 #install nfs on Ubuntu
 function install_nfs()
 {
