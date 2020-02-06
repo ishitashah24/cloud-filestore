@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 
-export PROJECT_ID = 
-export ZONE = us-west1-a
-export FILESHARE_NAME = "test_filestore"
+set -euxo pipefail
+
+export PROJECT_ID = "pso-wmt-data"
+export ZONE = "us-west1-a"
+export FILESTORE_NAME = "test_filestore"
 export CAPACITY = 1TB
+export NETWORK_NAME = "default"
 
 #create cloud filestore instance
 gcloud filestore instances create nfs-server \
     --project=${PROJECT_ID} \
     --zone=${ZONE} \
     --tier=STANDARD \
-    --file-share=name=${FILESHARE_NAME},capacity=${CAPACITY} \
-    --network=name="default"
+    --file-share-name=${FILESTORE_NAME},capacity=${CAPACITY} \
+    --network-name=${NETWORK_NAME}
 
-#get ip address of the instance
-gcloud filestore instances describe ${FILESHARE_NAME} \
+#verify that filestore has been created
+gcloud filestore instances describe ${FILESTORE_NAME} \
     --project=${PROJECT_ID} \
     --zone=${ZONE}
