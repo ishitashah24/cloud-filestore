@@ -17,13 +17,6 @@
 #This script mounts cloud filestore on Dataproc cluster. 
 
 
-#get information about filestore instance
-export FILESTORE_INSTANCE_NAME = $1
-export IP_ADDRESS = $(gcloud filestore instances describe ${FILESTORE_INSTANCE_NAME} \
-                       --project=${PROJECT_ID} \
-                       --zone=${ZONE}  
-                       --format="value(networks.ipAddress)")
-
 #install nfs on Ubuntu
 function install_nfs()
 {
@@ -31,6 +24,15 @@ function install_nfs()
   apt-get install nfs-common
 }
 
+#get information about filestore instance
+function get_parameters()
+{
+  export FILESTORE_INSTANCE_NAME = $1
+  export IP_ADDRESS = $(gcloud filestore instances describe ${FILESTORE_INSTANCE_NAME} \
+                       --project=${PROJECT_ID} \
+                       --zone=${ZONE}  
+                       --format="value(networks.ipAddress)")
+}
 
 function set_mount_directory()
 {
