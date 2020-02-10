@@ -7,7 +7,7 @@ This script sets environment variables, creates a filestore instance, and verifi
 # Mount Filestore
 This script mounts the filestore instance on dataproc cluster.
 Make a local directory and mount the file share from the Cloud Filestore instance.
-```FILESHARE_NAME`` is the name of file share
+```FILESHARE_NAME``` is the name of file share
 ```FILESTORE_INSTANCE_NAME``` is the name of filestore instance
 
 # Run the file
