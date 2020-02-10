@@ -16,6 +16,7 @@
 
 #This script mounts cloud filestore on Dataproc cluster. 
 
+set -euxo pipefail
 
 #install nfs on Ubuntu
 function install_nfs()
@@ -27,25 +28,25 @@ function install_nfs()
 #get information about filestore instance
 function get_parameters()
 {
-  export FILESTORE_INSTANCE_NAME = $1
-  export IP_ADDRESS = $(gcloud filestore instances describe ${FILESTORE_INSTANCE_NAME} \
-                       --project=${PROJECT_ID} \
-                       --zone=${ZONE}  
-                       --format="value(networks.ipAddress)")
+  export FILESTORE_INSTANCE_NAME=$1
+  export IP_ADDRESS=$(gcloud filestore instances describe ${FILESTORE_INSTANCE_NAME} \
+    --project=${PROJECT_ID} \
+    --zone=${ZONE} \
+    --format="value(networks.ipAddresses[0])")
 }
 
 function set_mount_directory()
 {
-  export mount_point_directory = /mnt/test
+  export MOUNT_DIRECTORY=/mnt/test
   
-  #make local directory to map to cloud filestore file share
-  mkdir -p ${mount_point_directory}  
+  #create a mount directory on the client instance for the Cloud Filestore file share
+  mkdir -p ${MOUNT_DIRECTORY}  
   
   #mount the filestore instance
-  mount ${IP_ADDRESS}:/${FILESTORE_INSTANCE_NAME} ${mount_point_directory}
+  mount ${IP_ADDRESS}:/${FILESHARE_NAME} ${MOUNT_DIRECTORY}
   
   #set permissions to allow users to read/write
-  chmod go+rw ${mount_point_directory}
+  chmod go+rw ${MOUNT_DIRECTORY}
   
   #confirm that the filestore file share is mounted
   df -h --type=nfs
@@ -55,7 +56,7 @@ function set_mount_directory()
 function main()
 {
   install_nfs
-  get_parameters nfs-server
+  get_parameters $FILESTORE_INSTANCE_NAME
   set_mount_directory
   
 }
